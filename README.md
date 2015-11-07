@@ -40,13 +40,13 @@ There are following data types:
         
 	"UserId": 123,
 
-        "YearRank": 17,
+    "YearRank": 17,
 
-        "PayedInMonth1": 1000099,
+    "PayedInMonth1": 1000099,
 
-        "PayedInMonth2": 800099,
+    "PayedInMonth2": 800099,
 
-        ...
+    ...
         
 	"PayedInMonth12": 130099
     
@@ -67,14 +67,14 @@ There are following data types:
 
 * **Request**
     
-* **URL:** `/payments`
+	* **URL:** `/payments`
     
-* **Method:** `POST`
+	* **Method:** `POST`
     
-* **Body:** *SALARY_PAYMENT*
+	* **Body:** *SALARY_PAYMENT*
 
 * **Response**
     
-* **Code:** `201 HTTP_CREATED`
+	* **Code:** `201 HTTP_CREATED`
     
-* **Body:** Id of created record
+	* **Body:** Id of created record
