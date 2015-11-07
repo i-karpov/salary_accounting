@@ -18,15 +18,15 @@ There are following data types:
         
 	"Id": "GUID",
 
-        "PayedToUserId": 123,
+    "PayedToUserId": 123,
 
-        "PayedDate": "YYYY-MM-DD HH:MM:SS",
+    "PayedDate": "YYYY-MM-DD HH:MM:SS",
 
-        "PayedPeriodStartDate": "YYYY-MM-DD HH:MM:SS",
+    "PayedPeriodStartDate": "YYYY-MM-DD HH:MM:SS",
 
-        "PayedPeriodEndDate": "YYYY-MM-DD HH:MM:SS",
+    "PayedPeriodEndDate": "YYYY-MM-DD HH:MM:SS",
 
-        "Amount": 29999
+    "Amount": 29999
     
 }
     
@@ -66,15 +66,36 @@ There are following data types:
 * **Available for roles:** ADMIN
 
 * **Request**
-    
 	* **URL:** `/payments`
-    
 	* **Method:** `POST`
-    
 	* **Body:** *SALARY_PAYMENT*
-
 * **Response**
-    
 	* **Code:** `201 HTTP_CREATED`
-    
 	* **Body:** Id of created record
+
+### Get Payment by Id
+* **REQUEST**
+    * **URL:** `/payments/{id}`
+    * **Method:** `GET`
+* **RESPONSE**
+    * **Content-Type:** `application/json`
+    * **Code:** `200 HTTP_OK`
+    * **Body:** *SALARY_PAYMENT*
+
+### Get user's Payments
+* **REQUEST**
+    * **URL:** `/users/{id}/payments`
+    * **Method:** `GET`
+* **RESPONSE**
+    * **Content-Type:** `application/json`
+    * **Code:** `200 HTTP_OK`
+    * **Body:** array of *SALARY_PAYMENT*
+
+### Get user's Payments Report for specific Year
+* **REQUEST**
+    * **URL:** `/users/{id}/payments/reports/year/{year}`
+    * **Method:** `GET`
+* **RESPONSE**
+    * **Content-Type:** `application/json`
+    * **Code:** `200 HTTP_OK`
+    * **Body:** *YEAR_SALARY_REPORT*
