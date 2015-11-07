@@ -62,7 +62,6 @@ There are following data types:
 ## Urls
 
 ### Create Payment Record
-
 * **Available for roles:** ADMIN
 * **Request**
 	* **URL:** `/payments`
@@ -73,28 +72,31 @@ There are following data types:
 	* **Body:** Id of created record
 
 ### Get Payment by Id
+* **Available for roles:** ADMIN, CLIENT
 * **REQUEST**
     * **URL:** `/payments/{id}`
     * **Method:** `GET`
 * **RESPONSE**
     * **Content-Type:** `application/json`
-    * **Code:** `200 HTTP_OK`
+    * **Code:** `200 HTTP_OK`, `404 HTTP_NOT_FOUND`, `403 HTTP_FORBIDDEN`
     * **Body:** *SALARY_PAYMENT*
 
 ### Get user's Payments
+* **Available for roles:** ADMIN, CLIENT
 * **REQUEST**
     * **URL:** `/users/{id}/payments`
     * **Method:** `GET`
 * **RESPONSE**
     * **Content-Type:** `application/json`
-    * **Code:** `200 HTTP_OK`
+    * **Code:** `200 HTTP_OK`, `404 HTTP_NOT_FOUND`, `403 HTTP_FORBIDDEN`
     * **Body:** array of *SALARY_PAYMENT*
 
 ### Get user's Payments Report for specific Year
+* **Available for roles:** ADMIN, CLIENT
 * **REQUEST**
     * **URL:** `/users/{id}/payments/reports/year/{year}`
     * **Method:** `GET`
 * **RESPONSE**
     * **Content-Type:** `application/json`
-    * **Code:** `200 HTTP_OK`
+    * **Code:** `200 HTTP_OK`, `404 HTTP_NOT_FOUND`, `403 HTTP_FORBIDDEN`
     * **Body:** *YEAR_SALARY_REPORT*
