@@ -64,7 +64,6 @@ There are following data types:
 ### Create Payment Record
 
 * **Available for roles:** ADMIN
-
 * **Request**
 	* **URL:** `/payments`
 	* **Method:** `POST`
