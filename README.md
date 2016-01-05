@@ -1,3 +1,13 @@
+# Useful commands
+
+sudo service nginx restart
+
+g++ SA_Server.cpp -pthread -lmongoclient -lboost_thread -lboost_system -lboost_regex  -O2 -fPIC -lfastcgi-daemon2 -shared -o lib_SA_Server.so
+
+
+fastcgi-daemon2 --config=SA_Server.conf
+
+
 # Salary Accounting - CAP Overview
 
 Система будет иметь модель **CP**. 
