@@ -7,8 +7,16 @@
 #include <sstream>
 #include <string>
 
+//#include <json/json.h>
+#include "mongo/bson/bson.h"
+#include "mongo/client/dbclient.h"
+
 
 using namespace std;
+using namespace mongo;
+
+
+#define PAYMENTS_COLLECTION_NAMESPASE "SA.payments"
 
 
 enum RequestType 
@@ -21,6 +29,7 @@ enum RequestType
 
 class SA_Server : virtual public fastcgi::Component, virtual public fastcgi::Handler
 {
+	DBClientConnection db;
 
     public:
         SA_Server(fastcgi::ComponentContext *context) :
@@ -31,7 +40,8 @@ class SA_Server : virtual public fastcgi::Component, virtual public fastcgi::Han
 
         virtual void onLoad()
         {
-
+		mongo::client::initialize();
+		db.connect("localhost");
         }
 
         virtual void onUnload()
@@ -72,8 +82,33 @@ class SA_Server : virtual public fastcgi::Component, virtual public fastcgi::Han
 			string id = GetPaymentIdFromUriPath(path);
 			std::stringbuf buffer5("id = " + id + "\n");
 			request->write(&buffer5);
+
+			std::stringbuf buffer7("------ RESULT ------\n");
+			request->write(&buffer7);
+
+			string result = GetVideo(id);
+			std::stringbuf buffer6("json = " + result + "\n");
+			request->write(&buffer6);
 		}                
         }
+
+	string GetVideo(string id)
+	{
+		
+		auto_ptr<DBClientCursor> cursor = db.query(PAYMENTS_COLLECTION_NAMESPASE, MONGO_QUERY("_id" << OID(id)));
+		if (cursor->more()) 
+		{
+			
+			BSONObj payment = cursor->next();
+			return payment["PayedToUserId"];
+			//Json::Value paymentJson;
+			//Json::Reader reader;
+			//reader.parse(payment.jsonString(), paymentJson);
+
+			//return video.toStyledString();
+		}
+	    return "";
+	}
 
 	string GetPaymentIdFromUriPath(string path)
 	{
