@@ -51,7 +51,7 @@ class SA_Server : virtual public fastcgi::Component, virtual public fastcgi::Han
 
         virtual void handleRequest(fastcgi::Request *request, fastcgi::HandlerContext *context)
         {
-                request->setContentType("text/plain");
+                
 
 		string URI = request->getURI();
 		string path = RemoveQuery(URI);
@@ -59,40 +59,47 @@ class SA_Server : virtual public fastcgi::Component, virtual public fastcgi::Han
 
 		RequestType requestType = GetRequestType(path, method);
 		
+/*
                 std::stringbuf buffer1("URI = " + URI + "\n");
 		request->write(&buffer1);
 		std::stringbuf buffer2("path = " + path + "\n");
 		request->write(&buffer2);
 		std::stringbuf buffer3("method = " + method + "\n");
-		request->write(&buffer3);
+		request->write(&buffer3);*/
 
 		if (requestType == UNKNOWN)
 		{
+			request->setContentType("text/plain");
 		}
 		else if (requestType == POST_PAYMENT_RECORD)
 		{
+			request->setContentType("application/json");
 			std::stringbuf buffer4("requestType = POST_PAYMENT_RECORD\n");
 			request->write(&buffer4);
 		}
 		else if (requestType == GET_PAYMENT_RECORD)
 		{
+			/*request->setContentType("application/json");
 			std::stringbuf buffer4("requestType = GET_PAYMENT_RECORD\n");
-			request->write(&buffer4);
+			request->write(&buffer4);*/
 
 			string id = GetPaymentIdFromUriPath(path);
-			std::stringbuf buffer5("id = " + id + "\n");
-			request->write(&buffer5);
+			string paymentJson = GetPaymentJson(id);
 
-			std::stringbuf buffer7("------ RESULT ------\n");
-			request->write(&buffer7);
-
-			string result = GetVideo(id);
-			std::stringbuf buffer6("json = " + result + "\n");
-			request->write(&buffer6);
+			if (!paymentJson.compare(""))
+			{
+				request->setStatus(404);
+			}
+			else
+			{
+				std::stringbuf bufferResults(paymentJson);
+				request->write(&bufferResults);
+				request->setStatus(200);
+			}
 		}                
         }
 
-	string GetVideo(string id)
+	string GetPaymentJson(string id)
 	{
 		
 		auto_ptr<DBClientCursor> cursor = db.query(PAYMENTS_COLLECTION_NAMESPASE, MONGO_QUERY("_id" << OID(id)));
@@ -100,7 +107,8 @@ class SA_Server : virtual public fastcgi::Component, virtual public fastcgi::Han
 		{
 			
 			BSONObj payment = cursor->next();
-			return payment["PayedToUserId"];
+			string paymentJson = payment.jsonString();
+			return paymentJson;
 			//Json::Value paymentJson;
 			//Json::Reader reader;
 			//reader.parse(payment.jsonString(), paymentJson);
