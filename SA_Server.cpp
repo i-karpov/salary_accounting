@@ -59,23 +59,26 @@ class SA_Server : virtual public fastcgi::Component, virtual public fastcgi::Han
 
 		RequestType requestType = GetRequestType(path, method);
 		
-/*
-                std::stringbuf buffer1("URI = " + URI + "\n");
-		request->write(&buffer1);
-		std::stringbuf buffer2("path = " + path + "\n");
-		request->write(&buffer2);
-		std::stringbuf buffer3("method = " + method + "\n");
-		request->write(&buffer3);*/
 
 		if (requestType == UNKNOWN)
 		{
 			request->setContentType("text/plain");
+			request->setStatus(400);
 		}
 		else if (requestType == POST_PAYMENT_RECORD)
 		{
+			std::string body;
+			request->requestBody().toString(body);
+
+			int amount = atoi(body.c_str());
+
+			string newPaymentId = SavePaymentJson(amount);
+
+
 			request->setContentType("application/json");
-			std::stringbuf buffer4("requestType = POST_PAYMENT_RECORD\n");
+			std::stringbuf buffer4("{ \"newId\": " + newPaymentId + " }");
 			request->write(&buffer4);
+			request->setStatus(200);
 		}
 		else if (requestType == GET_PAYMENT_RECORD)
 		{
@@ -98,6 +101,25 @@ class SA_Server : virtual public fastcgi::Component, virtual public fastcgi::Han
 			}
 		}                
         }
+
+	string SavePaymentJson(int amount)
+	{
+		//BSONObj paymentBSON = mongo::fromjson(newPyamentJson);
+
+		BSONObj paymentBSON = BSON(GENOID 
+			<< "PayedToUserId" << 8888
+			<< "PayedDate" << "2015-01-25 12:00:00"
+			<< "PayedPeriodStartDate" << "2015-01-01 00:00:00"
+			<< "PayedPeriodEndDate" << "2015-01-29 23:59:59" 
+			<< "Amount" << amount);
+
+		db.insert(PAYMENTS_COLLECTION_NAMESPASE, paymentBSON);
+
+		BSONElement oi;
+		paymentBSON.getObjectID(oi);
+		OID oid = oi.__oid();
+		return oid.toString(); 
+	}
 
 	string GetPaymentJson(string id)
 	{
